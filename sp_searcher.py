@@ -18,7 +18,7 @@ ids = []
 features = []
 
 while True:
-    searchQuery = input(">>> Insira o URI da playlist ou 0 para parar a aplicação: ").split(":")
+    searchQuery = input().split(":")
 
     if searchQuery[0] == "0":
         break
@@ -29,13 +29,19 @@ while True:
         searchResults = sp.user_playlist_tracks(searchQuery[2], searchQuery[4], fields='items')
 
         for item in searchResults["items"]:
+            print(item['track']['id'])
             ids.append(item["track"]["id"])
 
 ids_set = set(ids)
+print('-------------------')
+print(ids_set)
+ids_set.remove(None)
 
-for id in ids_set:
-    features.append(sp.audio_features(id))
+for item in ids_set:
+    print(item)
+    features.append(sp.audio_features(item))
 
+print('-------------------')
 
 with open(file_path, 'w') as f:
     json.dump(features, f, indent=2)
