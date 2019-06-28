@@ -19,7 +19,6 @@ features = []
 
 while True:
     searchQuery = input(">>> Insira o URI da playlist ou 0 para parar a aplicação: ").split(":")
-    print(searchQuery)
 
     if searchQuery[0] == "0":
         break
@@ -28,12 +27,13 @@ while True:
         sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
         searchResults = sp.user_playlist_tracks(searchQuery[2], searchQuery[4], fields='items')
-        print()
 
         for item in searchResults["items"]:
             ids.append(item["track"]["id"])
 
-for id in ids:
+ids_set = set(ids)
+
+for id in ids_set:
     features.append(sp.audio_features(id))
 
 
