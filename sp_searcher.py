@@ -29,16 +29,19 @@ while True:
         searchResults = sp.user_playlist_tracks(searchQuery[2], searchQuery[4], fields='items')
 
         for item in searchResults["items"]:
+            print(item['track']['id'])
             ids.append(item["track"]["id"])
 
 ids_set = set(ids)
+print('-------------------')
+print(ids_set)
+ids_set.remove(None)
 
-ids_set.discard(None)
+for item in ids_set:
+    print(item)
+    features.append(sp.audio_features(item))
 
-for id in ids_set:
-    print(id)
-    features.append(sp.audio_features(id))
-
+print('-------------------')
 
 with open(file_path, 'w') as f:
     json.dump(features, f, indent=2)
