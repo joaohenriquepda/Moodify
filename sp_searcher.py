@@ -18,7 +18,7 @@ ids = []
 features = []
 
 while True:
-    searchQuery = input(">>> Insira o URI da playlist ou 0 para parar a aplicação: ").split(":")
+    searchQuery = input().split(":")
 
     if searchQuery[0] == "0":
         break
@@ -33,7 +33,10 @@ while True:
 
 ids_set = set(ids)
 
+ids_set.discard(None)
+
 for id in ids_set:
+    print(id)
     features.append(sp.audio_features(id))
 
 
