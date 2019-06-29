@@ -35,7 +35,10 @@ while True:
 ids_set = set(ids)
 print('-------------------')
 print(ids_set)
-ids_set.remove(None)
+try:
+    ids_set.remove(None)
+except:
+    pass
 
 for item in ids_set:
     print(item)
