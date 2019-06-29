@@ -3,6 +3,7 @@ import sys
 
 file_path = sys.argv[1] 
 new_file = sys.argv[2]
+key = sys.argv[3]
 
 with open(file_path, 'r') as f:
     data = json.load(f)
@@ -14,6 +15,7 @@ for element in data:
         del element['duration_ms']
         del element['track_href']
         del element['uri']
+        element["emotion"] = key 
 
 with open(new_file, 'w') as f:
     json.dump(data, f, indent=2)
