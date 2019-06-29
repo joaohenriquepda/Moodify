@@ -2,9 +2,10 @@ from flask import Flask, jsonify, request
 import spotipy
 import spotipy.util as util
 from spotipy import oauth2
+import os
 
-SPOTIPY_CLIENT_ID = '3732fdd031c94c79aadf7547f007f7e7'
-SPOTIPY_CLIENT_SECRET = 'c6714347a13e40e0b3ee14e14b4df7f4'
+SPOTIPY_CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID', '')
+SPOTIPY_CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET', '')
 SPOTIPY_REDIRECT_URI = 'http://localhost:5000/emotion/'
 
 app = Flask(__name__)
@@ -14,31 +15,6 @@ sp_oauth = oauth2.SpotifyOAuth(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY_
 @app.route('/ask-auth/<username>')
 def ask_auth(username):
     savedToken = util.prompt_for_user_token(username, scope='user-read-recently-played')
-
-# @app.route('/emotion/<token>')
-# def emotion(token):
-#     if token:
-#         sp = spotipy.Spotify(auth=token)
-#         last10 = sp.current_user_recently_played(10)
-#         last100 = sp.current_user_recently_played(100)
-#         last1000 = sp.current_user_recently_played(1000)
-
-#         response = {
-#             'status': 'success',
-#             'data' : {
-#                 'last10': [music.to_json() for music in last10],
-#                 'last100': [music.to_json() for music in last100],
-#                 'last1000': [music.to_json() for music in last1000]
-#             }
-#         }
-
-#     else:
-#         response = {
-#             'status': 'fail',
-#             'data': {}
-#         }
-    
-#     return jsonify(response)
 
 @app.route('/emotion/')
 def emotion():
@@ -51,13 +27,41 @@ def emotion():
         last10 = sp.current_user_recently_played(10)
         last50 = sp.current_user_recently_played(50)
 
-        # response = {
-        #     'status': 'success',
-        #     'data' : {
-        #         'last10': last10,
-        #         'last50': last50
-        #     }
-        # }
+        ids10 = []
+        ids50 = []
+
+        for music in last10['items']:
+            ids10.append(music['track']['id'])
+
+        for music in last50['items']:
+            ids50.append(music['track']['id'])
+
+        features10 = sp.audio_features(ids10)
+        features50 = sp.audio_features(ids50)
+
+        for element in features10:
+            if type(element) is dict:
+                del element["type"]
+                del element['analysis_url']
+                del element['duration_ms']
+                del element['track_href']
+                del element['uri']
+
+        for element in features50:
+            if type(element) is dict:
+                del element["type"]
+                del element['analysis_url']
+                del element['duration_ms']
+                del element['track_href']
+                del element['uri']
+
+        response = {
+            'status': 'success',
+            'data' : {
+                'last10': features10,
+                'last50': features50
+            }
+        }
 
     else:
         response = {
