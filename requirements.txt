@@ -1,2 +1,8 @@
 spotipy
 pandas
+jupyter
+tensorflow
+numpy
+matplotlib
+Keras
+sklearn

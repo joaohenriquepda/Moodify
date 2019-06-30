@@ -1,5 +1,4 @@
 import json
-import pandas
 import csv
 
 print('START')
@@ -7,6 +6,9 @@ print('START')
 with open('./refined/sad.json', 'r') as f:
     sad = json.load(f)
     columns = list(sad[0].keys())
+    index = columns.index('id')
+    columns[0], columns[index] = columns[index], columns[0]
+    print(columns)
 
 with open('./refined/love.json', 'r') as f:
     love = json.load(f)
